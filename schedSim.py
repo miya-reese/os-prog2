@@ -14,24 +14,6 @@ class process:
     def compute_ta(self):
         self.turnaround = self.completion - self.arrival
 
-def main():
-    # read file
-    with open('jobs.txt') as job_file:
-        unsorted = [process(int(line.rstrip().split(' ')[0]), int(line.rstrip().split(' ')[1])) for line in job_file]
-    job_file.close()
-    # sort processes by arrival time
-    processes = sorted(unsorted, key=lambda x: x.arrival)
-    for i in range(0, len(processes)):
-        processes[i].id = i
-        processes[i].name = 'P' + str(i)
-    # algorithm
-    jobs = fifo(processes)
-    print(jobs)
-    for job in jobs:
-        print("Job %3d -- Turnaround %3.2f  Wait %3.2f" % (job.id, job.turnaround, job.wait))
-        print("        Arrival %3.2f  Burst %3.2f  Complete %3.2f" % (job.arrival, job.burst, job.completion))
-    print("\nAverage -- Turnaround %3.2f  Wait %3.2f" % (avg_ta(jobs), avg_wait(jobs)))
-
 def avg_wait(jobs):
     sum = 0
     for job in jobs:
@@ -55,6 +37,24 @@ def fifo(processes):
         p.compute_ta()
         time += p.burst
     return processes
+
+def main():
+    # read file
+    with open('jobs.txt') as job_file:
+        unsorted = [process(int(line.rstrip().split(' ')[0]), int(line.rstrip().split(' ')[1])) for line in job_file]
+    job_file.close()
+    # sort processes by arrival time
+    processes = sorted(unsorted, key=lambda x: x.arrival)
+    for i in range(0, len(processes)):
+        processes[i].id = i
+        processes[i].name = 'P' + str(i)
+    # algorithm
+    jobs = fifo(processes)
+    print(jobs)
+    for job in jobs:
+        print("Job %3d -- Turnaround %3.2f  Wait %3.2f" % (job.id, job.turnaround, job.wait))
+        print("        Arrival %3.2f  Burst %3.2f  Complete %3.2f" % (job.arrival, job.burst, job.completion))
+    print("\nAverage -- Turnaround %3.2f  Wait %3.2f" % (avg_ta(jobs), avg_wait(jobs)))
 
 if __name__=='__main__':
     main()
