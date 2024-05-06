@@ -3,7 +3,8 @@ class process:
         self.id = -1
         self.name = None
         self.arrival = arrival
-        self.burst = burst 
+        self.burst = burst
+        self.time_remaining = burst
         self.wait = -1
         self.completion = -1
         self.turnaround = -1
@@ -29,14 +30,18 @@ def avg_ta(jobs):
 def fifo(processes):
     time = 0
     for p in processes:
-        if (time - p.arrival > 0):
-            p.wait = time - p.arrival
-        else:
-            p.wait = 0
+        # busy wait until time = arrival
+        while (time < p.arrival):
+            time+=1
+        # process has arrived
+        p.wait = time - p.arrival
         p.completion = time + p.burst
         p.compute_ta()
         time += p.burst
     return processes
+
+def srtn(processes):
+    return
 
 def main():
     # read file
