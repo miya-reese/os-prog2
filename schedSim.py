@@ -15,6 +15,12 @@ class process:
     def compute_ta(self):
         self.turnaround = self.completion - self.arrival
 
+    def compute_wait(self):
+        self.wait = self.turnaround - self.burst
+
+    def update_burst(self):
+        self.time_remaining -= 1
+
 def avg_wait(jobs):
     sum = 0
     for job in jobs:
@@ -34,14 +40,36 @@ def fifo(processes):
         while (time < p.arrival):
             time+=1
         # process has arrived
-        p.wait = time - p.arrival
         p.completion = time + p.burst
         p.compute_ta()
+        p.compute_wait()
         time += p.burst
     return processes
 
 def srtn(processes):
-    return
+    time = 0
+    finished = []
+    temp = [] # job queue
+    while (len(finished) < len(processes)):
+        # add the arriving processes
+        temp = temp + [p for p in processes if p.arrival == time]
+        temp = sorted(temp, key=lambda x: x.time_remaining)
+        # schedule process
+        if (len(temp) > 0):
+            next_p = temp[0]
+            next_p.update_burst()
+            time += 1
+            # process is finished
+            if (next_p.time_remaining == 0):
+                next_p.completion = time
+                next_p.compute_ta()
+                next_p.compute_wait()
+                # remove job from queue and add to finished
+                finished.append(next_p)
+                temp.pop(0)
+        else:
+            time += 1
+    return finished
 
 def main():
     # read file
@@ -54,7 +82,7 @@ def main():
         processes[i].id = i
         processes[i].name = 'P' + str(i)
     # algorithm
-    jobs = fifo(processes)
+    jobs = srtn(processes)
     print(jobs)
     for job in jobs:
         print("Job %3d -- Turnaround %3.2f  Wait %3.2f" % (job.id, job.turnaround, job.wait))
