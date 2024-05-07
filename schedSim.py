@@ -69,7 +69,7 @@ def srtn(processes):
                 temp.pop(0)
         else:
             time += 1
-    return finished
+    return sorted(finished, key=lambda x: x.time_remaining)
 
 def main():
     # read file
