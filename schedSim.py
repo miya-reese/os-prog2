@@ -71,6 +71,36 @@ def srtn(processes):
             time += 1
     return sorted(finished, key=lambda x: x.time_remaining)
 
+def rr(processes, quantum):
+    time = 0 
+    finished = [] 
+    queue = []# job queue 
+    last_time = -1 
+    while (len(finished) < len(processes)): 
+        temp_finished = []
+        queue = queue + [p for p in processes if (p.arrival <= time and p.arrival > last_time)]
+        last_time = time
+        if len(queue) > 0: 
+            for process in queue:
+                # do quantum units of computation
+                for _ in range(quantum): 
+                    process.update_burst() 
+                    time += 1 
+                    # complete processes that are completed
+                    if process.time_remaining <= 0:
+                        process.completion = time
+                        process.compute_ta() 
+                        process.compute_wait() 
+                        temp_finished.append(process) 
+                        break
+            # remove temp_finished processes 
+            for finished_process in temp_finished: 
+                queue.remove(finished_process) 
+                finished.append(finished_process)
+        else: 
+            time += 1 
+    return processes
+
 def main():
     # read file
     with open('jobs.txt') as job_file:
@@ -82,8 +112,8 @@ def main():
         processes[i].id = i
         processes[i].name = 'P' + str(i)
     # algorithm
-    jobs = srtn(processes)
-    print(jobs)
+    #jobs = srtn(processes)
+    jobs = rr(processes, 1) 
     for job in jobs:
         print("Job %3d -- Turnaround %3.2f  Wait %3.2f" % (job.id, job.turnaround, job.wait))
         print("        Arrival %3.2f  Burst %3.2f  Complete %3.2f" % (job.arrival, job.burst, job.completion))
