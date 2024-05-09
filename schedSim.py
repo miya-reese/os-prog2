@@ -74,12 +74,12 @@ def srtn(processes):
 def rr(processes, quantum):
     time = 0 
     finished = [] 
-    queue = []# job queue 
+    queue = [] # job queue 
     last_time = -1 
     while (len(finished) < len(processes)): 
         temp_finished = []
-        queue = queue + [p for p in processes if (p.arrival <= time and p.arrival > last_time)]
-        last_time = time
+        queue = queue + [p for p in processes if (p.arrival <= time and p.arrival > last_time)] 
+        last_time = time # used to only add the processes which arrived during the quantum 
         if len(queue) > 0: 
             for process in queue:
                 # do quantum units of computation
@@ -99,7 +99,7 @@ def rr(processes, quantum):
                 finished.append(finished_process)
         else: 
             time += 1 
-    return processes
+    return sorted(processes, key=lambda x: x.arrival)
 
 def main():
     # read file
@@ -112,8 +112,8 @@ def main():
         processes[i].id = i
         processes[i].name = 'P' + str(i)
     # algorithm
-    #jobs = srtn(processes)
-    jobs = rr(processes, 1) 
+    jobs = srtn(processes)
+    #jobs = rr(processes, 1) 
     for job in jobs:
         print("Job %3d -- Turnaround %3.2f  Wait %3.2f" % (job.id, job.turnaround, job.wait))
         print("        Arrival %3.2f  Burst %3.2f  Complete %3.2f" % (job.arrival, job.burst, job.completion))
