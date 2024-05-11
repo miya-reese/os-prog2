@@ -1,0 +1,18 @@
+Miya Reese and Christopher Yoeurng
+
+Questions
+1. For what types of workloads does SRTN deliver the same turnaround times as FIFO?
+- When the processes are arrive in ascending order by burst time.
+- Or if all of the burst times are equal.
+
+2. For what types of workloads and quantum lengths does SRTN deliver the same response times as RR?
+- If the burst time of each process is less than or equal to the burst time of the next arriving process and less than or equal to the quantum.
+- Or if the next shortest process always arrives after a process runs for the fixed quantum.
+
+3. What happens to response time with SRTN as job lengths increase? Can you use the simulator to demonstrate the trend?
+- The response time will increase at the same rate as the job length increases.
+- Yes. Jobs with lengths 1 and 2 create an average response time of 0.5. Jobs with lengths 2 and 4 create an average response time of 1.
+
+4. What happens to response time with RR as quantum lengths increase? Can you write an equation that gives the worst-case response time, given N jobs?
+- The response time will also increase at the same rate as the quantum increase. 
+- (N-1)*quantum / N 
