@@ -1,3 +1,5 @@
+import sys
+
 class process: 
     def __init__(self, burst, arrival): 
         self.id = -1
@@ -102,8 +104,12 @@ def rr(processes, quantum):
     return sorted(processes, key=lambda x: x.arrival)
 
 def main():
+    # get command line args
+    num_args = len(sys.argv)
+    args = sys.argv
+    file_name = args[1]
     # read file
-    with open('jobs.txt') as job_file:
+    with open(file_name) as job_file:
         unsorted = [process(int(line.rstrip().split(' ')[0]), int(line.rstrip().split(' ')[1])) for line in job_file]
     job_file.close()
     # sort processes by arrival time
