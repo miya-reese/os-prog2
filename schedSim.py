@@ -1,4 +1,7 @@
+#!/usr/bin/env python
+
 import sys
+import argparse
 
 class process: 
     def __init__(self, burst, arrival): 
@@ -103,22 +106,57 @@ def rr(processes, quantum):
             time += 1 
     return sorted(processes, key=lambda x: x.arrival)
 
+def parse_args():
+    # Create the parser
+    parser = argparse.ArgumentParser(description="Schedule jobs using various algorithms.")
+
+    # Positional argument for the job file
+    parser.add_argument("job_file", type=str, help="File containing the list of jobs.")
+
+    # Optional argument for the scheduling algorithm
+    parser.add_argument("-p", "--algorithm", type=str, choices=["SRTN", "FIFO", "RR"], default="FIFO",
+                        help="Scheduling algorithm to use: SRTN, FIFO, or RR. Default is FIFO.")
+
+    # Optional argument for the quantum time in round-robin scheduling
+    parser.add_argument("-q", "--quantum", type=int, default=1,
+                        help="Quantum time length for round-robin scheduling. Default is 1.")
+
+    # Parse the arguments
+    args = parser.parse_args()
+
+    # Return the parsed arguments
+    return args
+
 def main():
     # get command line args
-    num_args = len(sys.argv)
-    args = sys.argv
-    file_name = args[1]
+    #num_args = len(sys.argv)
+    #args = sys.argv
+    #file_name = args[1]
+    args = parse_args()
+    file_name = args.job_file
+    algo = args.algorithm
+    quantum = args.quantum
+
     # read file
     with open(file_name) as job_file:
         unsorted = [process(int(line.rstrip().split(' ')[0]), int(line.rstrip().split(' ')[1])) for line in job_file]
     job_file.close()
+
     # sort processes by arrival time
     processes = sorted(unsorted, key=lambda x: x.arrival)
     for i in range(0, len(processes)):
         processes[i].id = i
         processes[i].name = 'P' + str(i)
-    # algorithm
-    jobs = srtn(processes)
+
+    # do algorithm
+    if algo == "RR": 
+        jobs = rr(processes, quantum)
+    elif algo == "SRTM":
+        jobs = srtn(processes)
+    else: 
+        jobs = fifo(processes)
+
+
     for job in jobs:
         print("Job %3d -- Turnaround %3.2f  Wait %3.2f" % (job.id, job.turnaround, job.wait))
         #print("        Arrival %3.2f  Burst %3.2f  Complete %3.2f" % (job.arrival, job.burst, job.completion))
