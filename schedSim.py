@@ -112,7 +112,7 @@ def main():
         processes[i].id = i
         processes[i].name = 'P' + str(i)
     # algorithm
-    jobs = rr(processes)
+    jobs = srtn(processes)
     print(jobs)
     for job in jobs:
         print("Job %3d -- Turnaround %3.2f  Wait %3.2f" % (job.id, job.turnaround, job.wait))
