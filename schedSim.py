@@ -113,10 +113,9 @@ def main():
         processes[i].name = 'P' + str(i)
     # algorithm
     jobs = srtn(processes)
-    print(jobs)
     for job in jobs:
         print("Job %3d -- Turnaround %3.2f  Wait %3.2f" % (job.id, job.turnaround, job.wait))
-        print("        Arrival %3.2f  Burst %3.2f  Complete %3.2f" % (job.arrival, job.burst, job.completion))
+        #print("        Arrival %3.2f  Burst %3.2f  Complete %3.2f" % (job.arrival, job.burst, job.completion))
     print("\nAverage -- Turnaround %3.2f  Wait %3.2f" % (avg_ta(jobs), avg_wait(jobs)))
 
 if __name__=='__main__':
